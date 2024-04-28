@@ -1,4 +1,5 @@
 from PIL import Image
+import cv2
 from flask import Flask, render_template, request, redirect, flash, url_for, send_file
 from werkzeug.utils import secure_filename
 import os
@@ -60,7 +61,7 @@ def operation_selection(filename):
   if form.validate_on_submit():
     operation = form.operation.data
     image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    image = Image.open(image_path)
+    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
     processed_image = process_image(image, operation)
 
     # Create folder for proccessed images
@@ -70,6 +71,7 @@ def operation_selection(filename):
 
     # # Save the processed image 
     processed_file_path = os.path.join(processed_folder, filename)
+    processed_image = Image.fromarray(processed_image)
     processed_image.save(processed_file_path)
 
     # Return a page allowing user to download an image
